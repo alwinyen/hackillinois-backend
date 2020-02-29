@@ -14,8 +14,9 @@ def runDB():
 
 def getToken(username):
     encoded_jwt = jwt.encode({"username": username}, SECRET, algorithm='HS256')
+    print(encoded_jwt.decode('ascii'))
     return {
-        "token": encoded_jwt.__str__(),
+        "token": encoded_jwt.decode('ascii'),
         "status": "SUCCESS"
     }
 
