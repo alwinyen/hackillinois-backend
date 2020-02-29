@@ -1,4 +1,3 @@
-import sewer
 from flask import Flask, json, request
 from Database import Database
 testURL = "https://www.cnn.com/2020/02/29/health/us-coronavirus-saturday/index.html"
@@ -35,4 +34,4 @@ def dns():
     account_key = client.account_key
 
 if __name__ == '__main__':
-    runDB()
+    server()
