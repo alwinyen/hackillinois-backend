@@ -3,6 +3,7 @@ from flask_cors import CORS
 from Database import Database
 from googlesearch import search
 import jwt
+import sys
 
 testURL = "https://www.cnn.com/2020/02/29/health/us-coronavirus-saturday/index.html"
 dbURL = "mongodb+srv://danielchen:CFDl0VIM7HIQHwpL@cluster0-5ytij.mongodb.net/test?retryWrites=true&w=majority"
@@ -74,8 +75,10 @@ def server():
         }
 
 
-    # api.run(host='0.0.0.0', debug=False)
-    api.run()
+    if len(sys.argv) > 1:
+        api.run(host='0.0.0.0', debug=False)
+    else:
+        api.run()
 
 if __name__ == '__main__':
    server()
