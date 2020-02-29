@@ -27,8 +27,8 @@ def server():
         return json.dumps(sources)
 
 
-    # api.run(host='0.0.0.0', debug=False)
-    api.run()
+    api.run(host='0.0.0.0', debug=False)
+    # api.run()
 
 if __name__ == '__main__':
    server()
