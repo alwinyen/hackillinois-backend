@@ -22,7 +22,7 @@ def server():
         print(request.args)
         return data
 
-    api.run();
+    api.run(host='0.0.0.0', debug = False);
 
 def dns():
     dns_class = sewer.CloudFlareDns(CLOUDFLARE_EMAIL='leechangwook0621@gmail.com',
