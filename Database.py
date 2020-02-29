@@ -13,6 +13,19 @@ class Database:
         user = self.User(username, password, name)
         self.db['User'].insert_one(user.getDict())
 
+    def findUser(self, username):
+        user = self.db['User'].find({
+            "username" : username
+        })
+        return user.count() > 0;
+
+    def authUser(self, username, password):
+        user = self.db['User'].find({
+            "username" : username,
+            "password" : password
+        })
+        return user.count() > 0
+
     def insertSource(self, url):
         source = self.Source(url)
         self.db['Source'].insert_one(source.getDict())
