@@ -24,25 +24,6 @@ def getToken(userID):
         "status": "SUCCESS"
     }
 
-def getGoogleSearch(query, num, start=0):
-    urls = search(query, tld='com', lang='en', num=num, start=start, stop=num, pause=0.01)
-    invalid = 0
-    valid = []
-
-    for url in urls:
-        print(url)
-        if urlparse(url).netloc in blacklist:
-            invalid += 1
-        else:
-            valid.append(url)
-
-    if invalid == 0:
-        return valid
-
-    valid += getGoogleSearch(query, invalid, start+num)
-
-    return valid
-
 def server():
     api = Flask(__name__)
     CORS(api)
@@ -148,36 +129,39 @@ def server():
 
         timer = time.time()
 
-        # urls = search(query, tld='com', lang='en', num=num, start=0, stop=num, pause=0.01)
+        def getGoogleSearch(query, n, start=0):
+            urls = search(query, tld='com', lang='en', num=n, start=start, stop=n, pause=0.01)
+            invalid = 0
+            valid = []
 
-        # urls = []
-        # index = 0
-        # for i in range(num):
-        #     url = next(search(query, tld='com', lang='en', num=1, start=index, stop=index))
-        #     print(urlparse(url).netloc)
-        #     while urlparse(url).netloc in blacklist:
-        #         index += 1
-        #         try:
-        #             url = next(search(query, tld='com', lang='en', num=1, start=index, stop=index))
-        #             print(urlparse(url).netloc)
-        #         except:
-        #             return {
-        #                 "status" : "ERROR",
-        #                 "msg" : "no results found"
-        #             }
-        #     index += 1
-        #     urls.append(url)
+            for url in urls:
+                print(url)
+                if urlparse(url).netloc in blacklist:
+                    invalid += 1
+                else:
+                    try:
+                        source = db.insertSource(url)
+                        valid.append(source)
+                    except:
+                        invalid += 1
 
-        urls = getGoogleSearch(query, num)
-        print(urls)
+            if invalid == 0:
+                return valid
 
-        sources = []
-        for url in urls:
-            try:
-                source = db.insertSource(url)
-                sources.append(source)
-            except AttributeError as err:
-                traceback.print_exc()
+            valid += getGoogleSearch(query, invalid, start + n)
+
+            return valid
+
+        sources = getGoogleSearch(query, num)
+        print(sources)
+
+        # sources = []
+        # for url in urls:
+        #     try:
+        #         source = db.insertSource(url)
+        #         sources.append(source)
+        #     except AttributeError as err:
+        #         traceback.print_exc()
 
         if 'token' in request.args:
             token = request.args['token']
