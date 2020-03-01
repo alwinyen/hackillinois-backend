@@ -129,7 +129,6 @@ def server():
                 source = db.insertSource(url)
             except AttributeError as err:
                 print(err)
-                continue
 
             sources.append(source)
 
