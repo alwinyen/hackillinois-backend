@@ -127,10 +127,9 @@ def server():
         for url in urls:
             try:
                 source = db.insertSource(url)
+                sources.append(source)
             except AttributeError as err:
                 print(err)
-
-            sources.append(source)
 
         if 'token' in request.args:
             token = request.args['token']
