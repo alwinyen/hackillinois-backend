@@ -57,6 +57,39 @@ def server():
             "msg" : "login credentials incorrect"
         }
 
+    @api.route('/add_favorite', methods=['POST'])
+    def add_favorite():
+        if 'token' not in request.args:
+            return {
+                "status" : "ERROR",
+                "msg" : "not logged in"
+            }
+
+        sourceID = request.args['sourceID']
+        status = request.args['status'] == '1'
+
+        db.favoriteSource(sourceID, status)
+        print(status)
+
+        return {
+            "status" : "SUCCESS"
+        }
+
+
+    @api.route('/get_favorite', methods=['POST'])
+    def get_favorite():
+        if 'token' not in request.args:
+            return {
+                "status" : "ERROR",
+                "msg" : "not logged in"
+            }
+
+        token = request.args['token']
+        payload = jwt.decode(token, SECRET, algorithms='HS256')
+        userID = payload['userID']
+
+        return json.dumps(db.getFavorite(userID))
+
     @api.route('/api', methods=['POST'])
     def query():
         query = request.args['query']
