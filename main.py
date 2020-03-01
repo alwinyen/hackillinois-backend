@@ -4,6 +4,8 @@ from Database import Database
 from googlesearch import search
 import jwt
 import sys
+from urllib.parse import urlparse
+import traceback
 
 import time
 
@@ -11,12 +13,35 @@ testURL = "https://www.cnn.com/2020/02/29/health/us-coronavirus-saturday/index.h
 dbURL = "mongodb+srv://danielchen:CFDl0VIM7HIQHwpL@cluster0-5ytij.mongodb.net/test?retryWrites=true&w=majority"
 SECRET = 'secret'
 
+blacklist = []
+with open('blacklist.txt', 'r') as f:
+    blacklist = f.read().split('\n')
+
 def getToken(userID):
     encoded_jwt = jwt.encode({"userID": str(userID)}, SECRET, algorithm='HS256')
     return {
         "token": encoded_jwt.decode('ascii'),
         "status": "SUCCESS"
     }
+
+def getGoogleSearch(query, num, start=0):
+    urls = search(query, tld='com', lang='en', num=num, start=start, stop=num, pause=0.01)
+    invalid = 0
+    valid = []
+
+    for url in urls:
+        print(url)
+        if urlparse(url).netloc in blacklist:
+            invalid += 1
+        else:
+            valid.append(url)
+
+    if invalid == 0:
+        return valid
+
+    valid += getGoogleSearch(query, invalid, start+num)
+
+    return valid
 
 def server():
     api = Flask(__name__)
@@ -119,9 +144,32 @@ def server():
         query = request.args['query']
         num = int(request.args['num'])
 
+        print(query)
+
         timer = time.time()
 
-        urls = search(query, tld='com', lang='en', num=num, start=0, stop=num, pause=0.1)
+        # urls = search(query, tld='com', lang='en', num=num, start=0, stop=num, pause=0.01)
+
+        # urls = []
+        # index = 0
+        # for i in range(num):
+        #     url = next(search(query, tld='com', lang='en', num=1, start=index, stop=index))
+        #     print(urlparse(url).netloc)
+        #     while urlparse(url).netloc in blacklist:
+        #         index += 1
+        #         try:
+        #             url = next(search(query, tld='com', lang='en', num=1, start=index, stop=index))
+        #             print(urlparse(url).netloc)
+        #         except:
+        #             return {
+        #                 "status" : "ERROR",
+        #                 "msg" : "no results found"
+        #             }
+        #     index += 1
+        #     urls.append(url)
+
+        urls = getGoogleSearch(query, num)
+        print(urls)
 
         sources = []
         for url in urls:
@@ -129,7 +177,7 @@ def server():
                 source = db.insertSource(url)
                 sources.append(source)
             except AttributeError as err:
-                print(err)
+                traceback.print_exc()
 
         if 'token' in request.args:
             token = request.args['token']

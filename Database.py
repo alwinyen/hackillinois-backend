@@ -106,11 +106,15 @@ class Database:
         def __init__(self, url):
             self.url = url
 
-            self.citation = getCitation(self.url)
-
+            # print("article")
             article = getArticle(self.url)
+
+            # print("citation")
+            self.citation = getCitation(article, url)
+
             self.title = article.title
 
+            # print("summary")
             summary = summarize(article)
             self.text = summary
 

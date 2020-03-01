@@ -7,8 +7,7 @@ from ArticleScraper import getArticle
 
 import datetime
 
-def getCitation(url):
-    article = getArticle(url)
+def getCitation(article, url):
     citation = Citation()
     citation.authors = article.authors
     citation.title = article.title
