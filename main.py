@@ -129,7 +129,7 @@ def server():
 
         timer = time.time()
 
-        def getGoogleSearch(query, n, start=0):
+        def getGoogleSearch(n, start=0):
             urls = search(query, tld='com', lang='en', num=n, start=start, stop=n, pause=0.01)
             invalid = 0
             valid = []
@@ -148,11 +148,11 @@ def server():
             if invalid == 0:
                 return valid
 
-            valid += getGoogleSearch(query, invalid, start + n)
+            valid += getGoogleSearch(invalid, start + n)
 
             return valid
 
-        sources = getGoogleSearch(query, num)
+        sources = getGoogleSearch(num)
         print(sources)
 
         # sources = []
