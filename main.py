@@ -98,6 +98,8 @@ def server():
         query = request.args['query']
         num = int(request.args['num'])
 
+        timer = time.time()
+
         urls = search(query, tld='com', lang='en', num=num, start=0, stop=num, pause=0.1)
 
         sources = []
@@ -122,6 +124,8 @@ def server():
             userID = payload['userID']
             for source in sources:
                 db.addSourceToUser(userID, source['_id'])
+
+        print("total search time:" + str(time.time() - timer))
 
         return {
             "sources" : sources,
