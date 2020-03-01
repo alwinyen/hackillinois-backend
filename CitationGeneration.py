@@ -4,8 +4,6 @@ from python_autocite.lib.citation import Citation
 from python_autocite.lib.formatter import APAFormatter
 from python_autocite.lib.datafinder import Datafinder
 import datetime
-import sys
-import argparse
 
 def url_to_soup(url):
     # Some websites are unhappy with no user agent, so here's
