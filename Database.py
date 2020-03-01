@@ -73,7 +73,7 @@ class Database:
 
     def getSortedFavorites(self, userID):
         favorites = self.getFavorite(userID)
-        sorted_favorites = sorted(favorites, key=(lambda source : source['citation'][0]))
+        sorted_favorites = sorted(favorites, key=(lambda source : source['citation']))
         return [sf['citation'] for sf in sorted_favorites]
 
     def insertMindmapNode(self, sourceID):
