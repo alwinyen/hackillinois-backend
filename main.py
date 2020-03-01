@@ -130,7 +130,7 @@ def server():
         timer = time.time()
 
         def getGoogleSearch(n, start=0):
-            urls = search(query, tld='com', lang='en', num=n, start=start, stop=n, pause=0.01)
+            urls = search(query, tld='s', lang='en', num=n, start=start, stop=n, pause=0.01)
             invalid = 0
             valid = []
 

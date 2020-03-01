@@ -2,3 +2,4 @@ en.wikipedia.org
 twitter.com
 www.youtube.com
 www.forbes.com
+open.spotify.com
