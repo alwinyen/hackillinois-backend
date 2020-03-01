@@ -53,7 +53,6 @@ def server():
 
         user = db.authUser(username, password)
         if (user.count() > 0):
-            print(user[0])
             return getToken(user[0]['_id'])
 
         return {
@@ -73,7 +72,6 @@ def server():
         status = request.args['status'] == '1'
 
         db.favoriteSource(sourceID, status)
-        print(status)
 
         return {
             "status" : "SUCCESS"
@@ -111,7 +109,6 @@ def server():
         try:
             payload = jwt.decode(token, SECRET, algorithms='HS256')
             userID = payload['userID']
-            print(db.getSortedFavorites(userID))
             return json.dumps(db.getSortedFavorites(userID));
         except:
             return {
@@ -153,15 +150,6 @@ def server():
             return valid
 
         sources = getGoogleSearch(num)
-        print(sources)
-
-        # sources = []
-        # for url in urls:
-        #     try:
-        #         source = db.insertSource(url)
-        #         sources.append(source)
-        #     except AttributeError as err:
-        #         traceback.print_exc()
 
         if 'token' in request.args:
             token = request.args['token']

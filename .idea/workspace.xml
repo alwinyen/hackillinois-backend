@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e86f8e71-4de4-416a-a87a-bfcb074fc186" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.google-cookie" beforeDir="false" afterPath="$PROJECT_DIR$/.google-cookie" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blacklist.txt" beforeDir="false" afterPath="$PROJECT_DIR$/blacklist.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -112,7 +109,7 @@
       <option name="presentableId" value="Default" />
       <updated>1582998379728</updated>
       <workItem from="1582998380882" duration="23280000" />
-      <workItem from="1583034642629" duration="7710000" />
+      <workItem from="1583034642629" duration="8374000" />
     </task>
     <servers />
   </component>
