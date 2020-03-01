@@ -96,7 +96,7 @@ def server():
         query = request.args['query']
         num = int(request.args['num'])
 
-        urls = search(query + ' news', tld='com', lang='en', num=num, start=0, stop=num, pause=0.1)
+        urls = search(query, tld='com', lang='en', num=num, start=0, stop=num, pause=0.1)
 
         sources = []
         for url in urls:
@@ -105,10 +105,8 @@ def server():
             except:
                 print("error")
                 continue
-            sources.append({
-                "data" : source.getDict(),
-                "sourceID" : source._id
-            })
+
+            sources.append(source)
 
         if 'token' in request.args:
             token = request.args['token']
@@ -121,7 +119,7 @@ def server():
                 }
             userID = payload['userID']
             for source in sources:
-                db.addSourceToUser(userID, source['sourceID'])
+                db.addSourceToUser(userID, source['_id'])
 
         return {
             "sources" : sources,

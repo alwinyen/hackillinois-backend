@@ -37,7 +37,8 @@ class Database:
     def insertSource(self, url):
         source = self.Source(url)
         id = self.db['Source'].insert_one(source.getDict())
-        source._id = str(id.inserted_id)
+        source = source.getDict()
+        source['_id'] = str(id.inserted_id)
         return source
 
     def favoriteSource(self, sourceID, status):
