@@ -4,6 +4,7 @@ from Database import Database
 from googlesearch import search
 import jwt
 import sys
+from bson.objectid import ObjectId
 
 testURL = "https://www.cnn.com/2020/02/29/health/us-coronavirus-saturday/index.html"
 dbURL = "mongodb+srv://danielchen:CFDl0VIM7HIQHwpL@cluster0-5ytij.mongodb.net/test?retryWrites=true&w=majority"
@@ -12,9 +13,8 @@ SECRET = 'secret'
 def runDB():
     db = Database(dbURL)
 
-def getToken(username):
-    encoded_jwt = jwt.encode({"username": username}, SECRET, algorithm='HS256')
-    print(encoded_jwt.decode('ascii'))
+def getToken(userID):
+    encoded_jwt = jwt.encode({"userID": str(userID)}, SECRET, algorithm='HS256')
     return {
         "token": encoded_jwt.decode('ascii'),
         "status": "SUCCESS"
@@ -47,9 +47,10 @@ def server():
         username = request.args['username']
         password = request.args['password']
 
-        if (db.authUser(username, password)):
-
-            return getToken(username)
+        user = db.authUser(username, password)
+        if (user.count() > 0):
+            print(user[0])
+            return getToken(user[0]['_id'])
 
         return {
             "status" : "ERROR",
@@ -60,15 +61,23 @@ def server():
     def query():
         query = request.args['query']
         num = int(request.args['num'])
-        token = request.args['token']
 
         urls = search(query, tld='com', lang='en', num=num, start=0, stop=num, pause=0.1)
 
         sources = []
         for url in urls:
-            print(url)
-            source = Database.Source(url)
-            sources.append(source.getDict())
+            source = db.insertSource(url)
+            sources.append({
+                "data" : source.getDict(),
+                "sourceID" : source._id
+            })
+
+        if 'token' in request.args:
+            token = request.args['token']
+            payload = jwt.decode(token, SECRET, algorithms='HS256')
+            userID = payload['userID']
+            for source in sources:
+                db.addSourceToUser(userID, source['sourceID'])
 
         return {
             "sources" : sources,

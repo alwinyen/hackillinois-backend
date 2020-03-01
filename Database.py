@@ -1,6 +1,7 @@
 import pymongo
 from ArticleScraper import getArticle, summarize
 from CitationGeneration import getCitation
+from bson.objectid import ObjectId
 
 class Database:
     def __init__(self, url):
@@ -17,18 +18,29 @@ class Database:
         user = self.db['User'].find({
             "username" : username
         })
-        return user.count() > 0;
+        return user.count() > 0
 
     def authUser(self, username, password):
         user = self.db['User'].find({
             "username" : username,
             "password" : password
         })
-        return user.count() > 0
+        return user
+
+    def addSourceToUser(self, userID, sourceID):
+        self.db['User'].update({
+            '_id' : ObjectId(userID)
+        }, {
+            '$push' : {'sources' : ObjectId(sourceID)}
+        })
+
+
 
     def insertSource(self, url):
         source = self.Source(url)
-        self.db['Source'].insert_one(source.getDict())
+        id = self.db['Source'].insert_one(source.getDict())
+        source._id = str(id.inserted_id)
+        return source
 
     def insertMindmapNode(self, sourceID):
         mindmapNode = self.MindmapNode(sourceID)
@@ -40,7 +52,7 @@ class Database:
 
     class User:
         def __init__(self, username, password, name):
-            self.id = -1;
+            self.id = -1
             self.username = username
             self.password = password
             self.name = name
