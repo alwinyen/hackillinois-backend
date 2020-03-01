@@ -71,6 +71,11 @@ class Database:
 
         return sources
 
+    def getSortedFavorites(self, userID):
+        favorites = self.getFavorite(userID)
+        sorted_favorites = sorted(favorites, key=(lambda source : source['citation'][0]))
+        return [sf['citation'] for sf in sorted_favorites]
+
     def insertMindmapNode(self, sourceID):
         mindmapNode = self.MindmapNode(sourceID)
         self.db['MindmapNode'].insert_one(mindmapNode.getDict())

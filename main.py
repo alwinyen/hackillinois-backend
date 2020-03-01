@@ -93,6 +93,27 @@ def server():
                 "msg" : "invalid token"
             }
 
+    @api.route('/get_sorted', methods=['POST'])
+    def get_sorted():
+        if 'token' not in request.args:
+            return {
+                "status" : "ERROR",
+                "msg" : "not logged in"
+            }
+
+        token = request.args['token']
+        try:
+            payload = jwt.decode(token, SECRET, algorithms='HS256')
+            userID = payload['userID']
+            print(db.getSortedFavorites(userID))
+            return json.dumps(db.getSortedFavorites(userID));
+        except:
+            return {
+                "status" : "ERROR",
+                "msg" : "invalid token"
+            }
+
+
     @api.route('/api', methods=['POST'])
     def query():
         query = request.args['query']
