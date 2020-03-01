@@ -4,14 +4,10 @@ from Database import Database
 from googlesearch import search
 import jwt
 import sys
-from bson.objectid import ObjectId
 
 testURL = "https://www.cnn.com/2020/02/29/health/us-coronavirus-saturday/index.html"
 dbURL = "mongodb+srv://danielchen:CFDl0VIM7HIQHwpL@cluster0-5ytij.mongodb.net/test?retryWrites=true&w=majority"
 SECRET = 'secret'
-
-def runDB():
-    db = Database(dbURL)
 
 def getToken(userID):
     encoded_jwt = jwt.encode({"userID": str(userID)}, SECRET, algorithm='HS256')
@@ -75,7 +71,6 @@ def server():
             "status" : "SUCCESS"
         }
 
-
     @api.route('/get_favorite', methods=['POST'])
     def get_favorite():
         if 'token' not in request.args:
@@ -85,21 +80,31 @@ def server():
             }
 
         token = request.args['token']
-        payload = jwt.decode(token, SECRET, algorithms='HS256')
-        userID = payload['userID']
+        try:
+            payload = jwt.decode(token, SECRET, algorithms='HS256')
+            userID = payload['userID']
 
-        return json.dumps(db.getFavorite(userID))
+            return json.dumps(db.getFavorite(userID))
+        except:
+            return {
+                "status" : "ERROR",
+                "msg" : "invalid token"
+            }
 
     @api.route('/api', methods=['POST'])
     def query():
         query = request.args['query']
         num = int(request.args['num'])
 
-        urls = search(query, tld='com', lang='en', num=num, start=0, stop=num, pause=0.1)
+        urls = search(query + ' news', tld='com', lang='en', num=num, start=0, stop=num, pause=0.1)
 
         sources = []
         for url in urls:
-            source = db.insertSource(url)
+            try:
+                source = db.insertSource(url)
+            except:
+                print("error")
+                continue
             sources.append({
                 "data" : source.getDict(),
                 "sourceID" : source._id
@@ -107,7 +112,13 @@ def server():
 
         if 'token' in request.args:
             token = request.args['token']
-            payload = jwt.decode(token, SECRET, algorithms='HS256')
+            try:
+                payload = jwt.decode(token, SECRET, algorithms='HS256')
+            except:
+                return {
+                    "status" : "ERROR",
+                    "msg" : "invalid token"
+                }
             userID = payload['userID']
             for source in sources:
                 db.addSourceToUser(userID, source['sourceID'])
