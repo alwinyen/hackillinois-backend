@@ -5,6 +5,8 @@ from googlesearch import search
 import jwt
 import sys
 
+import time
+
 testURL = "https://www.cnn.com/2020/02/29/health/us-coronavirus-saturday/index.html"
 dbURL = "mongodb+srv://danielchen:CFDl0VIM7HIQHwpL@cluster0-5ytij.mongodb.net/test?retryWrites=true&w=majority"
 SECRET = 'secret'
@@ -102,8 +104,8 @@ def server():
         for url in urls:
             try:
                 source = db.insertSource(url)
-            except:
-                print("error")
+            except AttributeError as err:
+                print(err)
                 continue
 
             sources.append(source)

@@ -1,7 +1,7 @@
 from newspaper import Article
 import nltk
-nltk.download('stopwords')
-nltk.download('punkt')
+# nltk.download('stopwords')
+# nltk.download('punkt')
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize, sent_tokenize
@@ -76,25 +76,6 @@ def summarize(article):
     threshold = _find_average_score(sentence_scores)
     summary = _generate_summary(sentences, sentence_scores, 1 * threshold)
     return summary
-
-# nltk.download('punkt')
-# url = "https://www.cnn.com/2020/02/29/health/us-coronavirus-saturday/index.html"
-# article = Article(url)
-# article.download()
-# article.parse()
-# article.text
-#
-# print(article.title)
-# print("###################################################################################")
-#
-#
-# freq_table = _create_frequency_table(article.text)
-# sent_tokenize(article.text)
-# sentences = sent_tokenize(article.text)
-# sentence_scores = _score_sentences(sentences, freq_table)
-# threshold = _find_average_score(sentence_scores)
-# summary = _generate_summary(sentences, sentence_scores, 1 * threshold)
-# print(summary)
 
 
 

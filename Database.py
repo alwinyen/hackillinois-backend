@@ -3,6 +3,8 @@ from ArticleScraper import getArticle, summarize
 from CitationGeneration import getCitation
 from bson.objectid import ObjectId
 
+import time
+
 class Database:
     def __init__(self, url):
         self.client = pymongo.MongoClient(url)
